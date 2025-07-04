@@ -87,6 +87,7 @@ import android.view.IWindowManager;
 import android.view.MotionEvent;
 import android.view.ThreadedRenderer;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewConfiguration;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -151,6 +152,7 @@ import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.MigrateClocksToBlueprint;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.media.MediaViewController;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.navigationbar.views.NavigationBarView;
 import com.android.systemui.notetask.NoteTaskController;
@@ -490,6 +492,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
 
     private final PulseControllerImpl mPulseController;
     private VisualizerView mVisualizerView;
+    private final MediaViewController mMediaViewController;
 
     private final DisplayMetrics mDisplayMetrics;
 
@@ -766,6 +769,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
             EmergencyGestureIntentFactory emergencyGestureIntentFactory,
             ViewCaptureAwareWindowManager viewCaptureAwareWindowManager,
             BurnInProtectionController burnInProtectionController
+            MediaViewController mediaViewController
     ) {
         mContext = context;
         mNotificationsController = notificationsController;
@@ -912,6 +916,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
         mLightRevealScrim = lightRevealScrim;
 
         mViewCaptureAwareWindowManager = viewCaptureAwareWindowManager;
+        mMediaViewController = mediaViewController;
 
         if (PredictiveBackSysUiFlag.isEnabled()) {
             mContext.getApplicationInfo().setEnableOnBackInvokedCallback(true);
@@ -1166,6 +1171,13 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
                 (requestTopUi, componentTag) -> mMainExecutor.execute(() ->
                         mNotificationShadeWindowController.setRequestTopUi(
                                 requestTopUi, componentTag))));
+        getNotifContainerParentView().addView(mMediaViewController.getMediaArtScrim(), 0);
+    }
+
+    private ViewGroup getNotifContainerParentView() {
+        ViewGroup rootView = (ViewGroup) getNotificationShadeWindowView().findViewById(R.id.scrim_behind).getParent();
+        ViewGroup targetView = rootView.findViewById(R.id.notification_container_parent);
+        return targetView;
     }
 
     @VisibleForTesting
