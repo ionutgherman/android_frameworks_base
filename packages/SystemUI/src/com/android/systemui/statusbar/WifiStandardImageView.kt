@@ -47,7 +47,7 @@ class WifiStandardImageView @JvmOverloads constructor(
                     4 -> R.drawable.ic_wifi_standard_4
                     5 -> R.drawable.ic_wifi_standard_5
                     6 -> R.drawable.ic_wifi_standard_6
-                    7 -> R.drawable.ic_wifi_standard_7
+                    8 -> R.drawable.ic_wifi_standard_7
                     else -> 0
                 }
 
